@@ -1,9 +1,9 @@
 {
   "categories": [
-    { "id": "web",       "label": "Web",            "color": "#00d9ff" },
-    { "id": "forensics", "label": "Forensics/OSINT", "color": "#a855f7" },
-    { "id": "crypto",    "label": "Crypto",          "color": "#f59e0b" },
-    { "id": "pwn",       "label": "Pwn/Rev",         "color": "#f43f5e" }
+    { "id": "web",       "label": "Web",            "color": "#2f6fb0" },
+    { "id": "forensics", "label": "Forensics/OSINT", "color": "#7a5aa8" },
+    { "id": "crypto",    "label": "Crypto",          "color": "#a86a12" },
+    { "id": "pwn",       "label": "Pwn/Rev",         "color": "#b4414f" }
   ],
   "tools": [
     {

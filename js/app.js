@@ -21,9 +21,9 @@ const els = {
 };
 
 const DIFF = {
-  1: { label: '入門', color: 'var(--d1)' },
-  2: { label: '中級', color: 'var(--d2)' },
-  3: { label: '上級', color: 'var(--d3)' },
+  1: { label: '入門', color: 'var(--lv1)' },
+  2: { label: '中級', color: 'var(--lv2)' },
+  3: { label: '上級', color: 'var(--lv3)' },
 };
 
 init();
@@ -65,7 +65,7 @@ function bindEvents() {
 
 function renderTabs() {
   const counts = state.tools.reduce((m, t) => (m[t.category] = (m[t.category] || 0) + 1, m), {});
-  const tabs = [{ id: 'all', label: 'すべて', color: 'var(--accent)' }, ...state.categories];
+  const tabs = [{ id: 'all', label: 'すべて', color: 'var(--ink)' }, ...state.categories];
 
   els.tabs.innerHTML = '';
   tabs.forEach(cat => {
@@ -111,7 +111,7 @@ function render() {
     return;
   }
   els.empty.hidden = true;
-  els.count.innerHTML = `<b>${list.length}</b> 件のツール`;
+  els.count.innerHTML = `<b>${list.length}</b> 件`;
 
   const frag = document.createDocumentFragment();
   list.forEach(t => frag.appendChild(buildCard(t)));
@@ -133,15 +133,7 @@ function buildCard(tool) {
   const dEl = node.querySelector('.difficulty');
   dEl.style.setProperty('--diff-color', diff.color);
   dEl.title = `難易度: ${diff.label}`;
-  for (let i = 1; i <= 3; i++) {
-    const pip = document.createElement('span');
-    pip.className = 'pip' + (i <= tool.difficulty ? ' on' : '');
-    dEl.appendChild(pip);
-  }
-  const dLabel = document.createElement('span');
-  dLabel.className = 'label';
-  dLabel.textContent = diff.label;
-  dEl.appendChild(dLabel);
+  dEl.textContent = diff.label;
 
   node.querySelector('.tagline').textContent = tool.tagline || '';
   node.querySelector('.when-text').textContent = tool.when_to_use || '';
@@ -179,14 +171,15 @@ function buildCard(tool) {
 async function handleAi(tool, btn, out) {
   if (tool._ai) {
     toggleAi(out, tool._ai);
+    btn.textContent = out.hidden ? 'AI の解説を読む' : 'AI の解説を閉じる';
     return;
   }
   btn.disabled = true;
-  const original = btn.innerHTML;
-  btn.innerHTML = '<span class="ai-icon">✦</span> 解説を生成中…';
+  const original = btn.textContent;
+  btn.textContent = '解説を書いています…';
   out.hidden = false;
   out.classList.remove('error');
-  out.innerHTML = '<span class="ai-tag">AI解説</span><span class="typing"></span>';
+  out.innerHTML = '<span class="ai-tag">AI による解説</span><span class="typing"></span>';
   const typingEl = out.querySelector('.typing');
 
   try {
@@ -204,13 +197,13 @@ async function handleAi(tool, btn, out) {
       throw new Error(data.error || '解説の生成に失敗しました。');
     }
     tool._ai = data.text;
-    btn.innerHTML = '<span class="ai-icon">✦</span> AI解説を表示/非表示';
+    btn.textContent = 'AI の解説を閉じる';
     typeText(typingEl, data.text);
   } catch (err) {
     out.classList.add('error');
     out.innerHTML =
       `<span class="ai-tag">エラー</span>${escapeHtml(err.message)}<br><small>config.php のAPIキー設定を確認してください。</small>`;
-    btn.innerHTML = original;
+    btn.textContent = original;
   } finally {
     btn.disabled = false;
   }
@@ -219,7 +212,7 @@ async function handleAi(tool, btn, out) {
 function toggleAi(out, text) {
   if (out.hidden) {
     out.hidden = false;
-    out.innerHTML = `<span class="ai-tag">AI解説</span>${escapeHtml(text)}`;
+    out.innerHTML = `<span class="ai-tag">AI による解説</span>${escapeHtml(text)}`;
   } else {
     out.hidden = true;
   }
@@ -241,8 +234,8 @@ function typeText(el, text) {
 function copyText(text, btn) {
   navigator.clipboard?.writeText(text).then(() => {
     btn.classList.add('copied');
-    btn.textContent = '✓';
-    setTimeout(() => { btn.classList.remove('copied'); btn.textContent = '⧉'; }, 1400);
+    btn.textContent = 'コピーしました';
+    setTimeout(() => { btn.classList.remove('copied'); btn.textContent = 'コピー'; }, 1400);
   }).catch(() => {});
 }
 
