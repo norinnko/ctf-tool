@@ -1,0 +1,2 @@
+# キャッシュファイルへの直接アクセスを拒否
+Require all denied

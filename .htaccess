@@ -1,0 +1,17 @@
+# CTF Tool DB - Apache 設定
+
+# ディレクトリ一覧表示を無効化
+Options -Indexes
+
+# 文字コード
+AddDefaultCharset UTF-8
+
+# config.php への直接アクセスを拒否（PHPからの include は影響を受けない）
+<Files "config.php">
+  Require all denied
+</Files>
+
+# テンプレート・ドキュメントを隠す
+<FilesMatch "\.(sample\.php|md|json\.bak)$">
+  Require all denied
+</FilesMatch>

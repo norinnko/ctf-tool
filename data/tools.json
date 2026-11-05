@@ -1,0 +1,577 @@
+{
+  "categories": [
+    { "id": "web",       "label": "Web",            "color": "#00d9ff" },
+    { "id": "forensics", "label": "Forensics/OSINT", "color": "#a855f7" },
+    { "id": "crypto",    "label": "Crypto",          "color": "#f59e0b" },
+    { "id": "pwn",       "label": "Pwn/Rev",         "color": "#f43f5e" }
+  ],
+  "tools": [
+    {
+      "id": "burpsuite",
+      "name": "Burp Suite",
+      "category": "web",
+      "difficulty": 2,
+      "tagline": "Web診断の定番プロキシツール",
+      "when_to_use": "HTTPリクエストを傍受・改ざんしてWebアプリの挙動を手動で調べたい時。Web問題の最初の一歩。",
+      "use_cases": ["リクエスト傍受・改ざん", "Repeaterで再送検証", "Intruderで総当たり"],
+      "command": "# GUIツール。ブラウザのプロキシを 127.0.0.1:8080 に設定して使う",
+      "tags": ["proxy", "scanner", "manual"],
+      "sources": [
+        { "label": "公式サイト", "url": "https://portswigger.net/burp" },
+        { "label": "公式ドキュメント", "url": "https://portswigger.net/burp/documentation" }
+      ]
+    },
+    {
+      "id": "sqlmap",
+      "name": "sqlmap",
+      "category": "web",
+      "difficulty": 2,
+      "tagline": "SQLインジェクション自動化ツール",
+      "when_to_use": "SQLインジェクションが疑われる入力点を見つけ、自動で検出・データ抽出したい時。",
+      "use_cases": ["脆弱性の自動検出", "DB名・テーブルの列挙", "データダンプ"],
+      "command": "sqlmap -u \"https://target/item?id=1\" --batch --dbs",
+      "tags": ["sqli", "database", "automation"],
+      "sources": [
+        { "label": "公式サイト", "url": "https://sqlmap.org" },
+        { "label": "GitHub", "url": "https://github.com/sqlmapproject/sqlmap" }
+      ]
+    },
+    {
+      "id": "ffuf",
+      "name": "ffuf",
+      "category": "web",
+      "difficulty": 2,
+      "tagline": "高速Webファジングツール",
+      "when_to_use": "隠れたディレクトリ・ファイル・パラメータを高速に総当たりで探したい時。",
+      "use_cases": ["ディレクトリ探索", "サブドメイン探索", "パラメータ探索"],
+      "command": "ffuf -u https://target/FUZZ -w wordlist.txt -mc 200,301",
+      "tags": ["fuzzing", "discovery", "fast"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/ffuf/ffuf" }
+      ]
+    },
+    {
+      "id": "gobuster",
+      "name": "gobuster",
+      "category": "web",
+      "difficulty": 1,
+      "tagline": "ディレクトリ/DNS総当たりツール",
+      "when_to_use": "Webサーバーの隠しディレクトリやサブドメインを手早く列挙したい時。",
+      "use_cases": ["ディレクトリ列挙", "サブドメイン列挙", "vhost探索"],
+      "command": "gobuster dir -u https://target -w wordlist.txt",
+      "tags": ["discovery", "bruteforce", "dns"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/OJ/gobuster" }
+      ]
+    },
+    {
+      "id": "nikto",
+      "name": "Nikto",
+      "category": "web",
+      "difficulty": 1,
+      "tagline": "Webサーバー脆弱性スキャナ",
+      "when_to_use": "対象Webサーバーの既知の設定ミス・古いソフト・危険ファイルをざっと洗い出したい時。",
+      "use_cases": ["既知脆弱性スキャン", "設定ミス検出", "危険ファイル検出"],
+      "command": "nikto -h https://target",
+      "tags": ["scanner", "recon"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/sullo/nikto" }
+      ]
+    },
+    {
+      "id": "wfuzz",
+      "name": "wfuzz",
+      "category": "web",
+      "difficulty": 2,
+      "tagline": "Webアプリファザー",
+      "when_to_use": "パラメータ値やヘッダを差し替えながら応答の違いを観察したい時。ブラインド系に強い。",
+      "use_cases": ["パラメータファジング", "Cookie/ヘッダ操作", "レスポンス差分検出"],
+      "command": "wfuzz -c -z file,wordlist.txt -u \"https://target/?id=FUZZ\"",
+      "tags": ["fuzzing", "parameters"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/xmendez/wfuzz" }
+      ]
+    },
+    {
+      "id": "dirsearch",
+      "name": "dirsearch",
+      "category": "web",
+      "difficulty": 1,
+      "tagline": "Webパス探索ツール",
+      "when_to_use": "拡張子指定でファイル・ディレクトリを探したい時。導入が簡単で初心者向き。",
+      "use_cases": ["パス探索", "拡張子別探索", "再帰探索"],
+      "command": "dirsearch -u https://target -e php,html,txt",
+      "tags": ["discovery", "bruteforce"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/maurosoria/dirsearch" }
+      ]
+    },
+    {
+      "id": "jwt_tool",
+      "name": "jwt_tool",
+      "category": "web",
+      "difficulty": 2,
+      "tagline": "JWT解析・改ざんツール",
+      "when_to_use": "JWT(JSON Web Token)を使う認証で、署名検証の不備やalg=none攻撃を試したい時。",
+      "use_cases": ["JWTデコード", "署名改ざん検証", "alg=none攻撃"],
+      "command": "python3 jwt_tool.py <JWT> -X a",
+      "tags": ["jwt", "auth", "token"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/ticarpi/jwt_tool" }
+      ]
+    },
+    {
+      "id": "xsstrike",
+      "name": "XSStrike",
+      "category": "web",
+      "difficulty": 3,
+      "tagline": "高度なXSS検出ツール",
+      "when_to_use": "反射型・DOM型XSSをペイロード生成・WAF回避まで含めて検証したい時。",
+      "use_cases": ["XSS自動検出", "ペイロード生成", "WAF回避テスト"],
+      "command": "python3 xsstrike.py -u \"https://target/?q=test\"",
+      "tags": ["xss", "payload", "waf"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/s0md3v/XSStrike" }
+      ]
+    },
+    {
+      "id": "curl",
+      "name": "curl",
+      "category": "web",
+      "difficulty": 1,
+      "tagline": "万能HTTPクライアント",
+      "when_to_use": "ヘッダやメソッドを細かく制御してリクエストを送りたい時。スクリプト化にも必須。",
+      "use_cases": ["任意ヘッダ送信", "メソッド指定", "Cookie/リダイレクト制御"],
+      "command": "curl -i -X POST -d 'a=1' -H 'X-Test: 1' https://target/api",
+      "tags": ["http", "client", "scripting"],
+      "sources": [
+        { "label": "公式サイト", "url": "https://curl.se" },
+        { "label": "manページ", "url": "https://curl.se/docs/manpage.html" }
+      ]
+    },
+
+    {
+      "id": "wireshark",
+      "name": "Wireshark",
+      "category": "forensics",
+      "difficulty": 2,
+      "tagline": "ネットワークパケット解析の定番",
+      "when_to_use": "pcapファイルを開いて通信内容を追い、隠されたデータやフラグを探したい時。",
+      "use_cases": ["pcap解析", "TCPストリーム追跡", "プロトコル別フィルタ"],
+      "command": "# GUI。Follow TCP Stream や filter (http, dns 等) を活用",
+      "tags": ["pcap", "network", "packets"],
+      "sources": [
+        { "label": "公式サイト", "url": "https://www.wireshark.org" }
+      ]
+    },
+    {
+      "id": "binwalk",
+      "name": "binwalk",
+      "category": "forensics",
+      "difficulty": 2,
+      "tagline": "ファイル内の埋め込みデータ検出",
+      "when_to_use": "画像やファームウェアに別ファイルが隠されていないか調べ、抽出したい時。",
+      "use_cases": ["埋め込みファイル検出", "自動抽出", "ファームウェア解析"],
+      "command": "binwalk -e suspicious.bin",
+      "tags": ["carving", "embedded", "firmware"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/ReFirmLabs/binwalk" }
+      ]
+    },
+    {
+      "id": "exiftool",
+      "name": "ExifTool",
+      "category": "forensics",
+      "difficulty": 1,
+      "tagline": "メタデータ抽出ツール",
+      "when_to_use": "画像・PDF・動画のメタデータ(撮影場所・作成者・コメント)を確認したい時。",
+      "use_cases": ["メタデータ表示", "GPS位置抽出", "隠しコメント発見"],
+      "command": "exiftool image.jpg",
+      "tags": ["metadata", "exif", "osint"],
+      "sources": [
+        { "label": "公式サイト", "url": "https://exiftool.org" }
+      ]
+    },
+    {
+      "id": "foremost",
+      "name": "foremost",
+      "category": "forensics",
+      "difficulty": 2,
+      "tagline": "ファイルカービング・復元",
+      "when_to_use": "ディスクイメージやファイルから、ヘッダを手掛かりに埋もれたファイルを復元したい時。",
+      "use_cases": ["ファイル復元", "カービング", "ディスクイメージ解析"],
+      "command": "foremost -i disk.img -o output/",
+      "tags": ["carving", "recovery"],
+      "sources": [
+        { "label": "公式サイト", "url": "http://foremost.sourceforge.net" }
+      ]
+    },
+    {
+      "id": "steghide",
+      "name": "steghide",
+      "category": "forensics",
+      "difficulty": 2,
+      "tagline": "ステガノグラフィ抽出ツール",
+      "when_to_use": "JPEG/WAVなどにパスフレーズ付きで隠されたデータを抽出したい時。",
+      "use_cases": ["隠しデータ抽出", "パスフレーズ解除", "埋め込み確認"],
+      "command": "steghide extract -sf image.jpg",
+      "tags": ["stego", "hidden"],
+      "sources": [
+        { "label": "公式サイト", "url": "https://steghide.sourceforge.net" }
+      ]
+    },
+    {
+      "id": "zsteg",
+      "name": "zsteg",
+      "category": "forensics",
+      "difficulty": 2,
+      "tagline": "PNG/BMPステガノ検出",
+      "when_to_use": "PNGやBMPのLSB(最下位ビット)に隠されたデータを検出したい時。",
+      "use_cases": ["LSBステガノ検出", "チャンネル別解析", "自動スキャン"],
+      "command": "zsteg -a image.png",
+      "tags": ["stego", "lsb", "png"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/zed-0xff/zsteg" }
+      ]
+    },
+    {
+      "id": "volatility",
+      "name": "Volatility3",
+      "category": "forensics",
+      "difficulty": 3,
+      "tagline": "メモリフォレンジックフレームワーク",
+      "when_to_use": "メモリダンプ(.raw/.dmp)からプロセス・ネットワーク・認証情報を解析したい時。",
+      "use_cases": ["プロセス一覧抽出", "ネットワーク接続復元", "認証情報抽出"],
+      "command": "vol -f memory.raw windows.pslist",
+      "tags": ["memory", "dump", "advanced"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/volatilityfoundation/volatility3" }
+      ]
+    },
+    {
+      "id": "autopsy",
+      "name": "Autopsy",
+      "category": "forensics",
+      "difficulty": 2,
+      "tagline": "統合デジタルフォレンジック",
+      "when_to_use": "ディスクイメージをGUIで体系的に解析し、削除ファイルや履歴を調べたい時。",
+      "use_cases": ["ディスク解析", "削除ファイル復元", "タイムライン作成"],
+      "command": "# GUIツール。ケースを作成しディスクイメージを読み込む",
+      "tags": ["disk", "gui", "timeline"],
+      "sources": [
+        { "label": "公式サイト", "url": "https://www.autopsy.com" }
+      ]
+    },
+    {
+      "id": "strings",
+      "name": "strings",
+      "category": "forensics",
+      "difficulty": 1,
+      "tagline": "バイナリから文字列抽出",
+      "when_to_use": "とりあえずファイルの中身に可読文字列(フラグやパス)がないか確認したい時。最初に試す定番。",
+      "use_cases": ["文字列抽出", "フラグ初探索", "埋め込み文字確認"],
+      "command": "strings -n 8 binary | grep -i flag",
+      "tags": ["binary", "basic", "quick"],
+      "sources": [
+        { "label": "binutils", "url": "https://www.gnu.org/software/binutils/" }
+      ]
+    },
+    {
+      "id": "theharvester",
+      "name": "theHarvester",
+      "category": "forensics",
+      "difficulty": 2,
+      "tagline": "OSINT情報収集ツール",
+      "when_to_use": "対象ドメインに紐づくメール・サブドメイン・ホストを公開情報から集めたい時。",
+      "use_cases": ["メール収集", "サブドメイン収集", "ホスト列挙"],
+      "command": "theHarvester -d example.com -b all",
+      "tags": ["osint", "recon", "email"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/laramies/theHarvester" }
+      ]
+    },
+
+    {
+      "id": "cyberchef",
+      "name": "CyberChef",
+      "category": "crypto",
+      "difficulty": 1,
+      "tagline": "エンコード/デコードの万能ナイフ",
+      "when_to_use": "Base64・Hex・ROT13・XORなど多段の変換をブラウザ上でGUIで試したい時。",
+      "use_cases": ["多段デコード", "エンコード変換", "簡易暗号解読"],
+      "command": "# ブラウザで開き、Recipeに操作をドラッグして組み立てる",
+      "tags": ["encoding", "decode", "gui"],
+      "sources": [
+        { "label": "公式(GCHQ)", "url": "https://gchq.github.io/CyberChef/" }
+      ]
+    },
+    {
+      "id": "hashcat",
+      "name": "hashcat",
+      "category": "crypto",
+      "difficulty": 2,
+      "tagline": "GPU対応ハッシュクラッカー",
+      "when_to_use": "MD5/SHA/NTLMなどのハッシュをGPUの力で高速に辞書/総当たり解読したい時。",
+      "use_cases": ["ハッシュ解読", "辞書攻撃", "ルールベース攻撃"],
+      "command": "hashcat -m 0 -a 0 hashes.txt wordlist.txt",
+      "tags": ["hash", "cracking", "gpu"],
+      "sources": [
+        { "label": "公式サイト", "url": "https://hashcat.net/hashcat/" }
+      ]
+    },
+    {
+      "id": "john",
+      "name": "John the Ripper",
+      "category": "crypto",
+      "difficulty": 2,
+      "tagline": "定番パスワードクラッカー",
+      "when_to_use": "zip/pdf/shadowなど様々な形式のハッシュやパスワード付きファイルを解読したい時。",
+      "use_cases": ["パスワード解読", "zip/pdf解析", "*2john変換"],
+      "command": "zip2john secret.zip > hash.txt && john hash.txt",
+      "tags": ["password", "cracking", "hash"],
+      "sources": [
+        { "label": "公式サイト", "url": "https://www.openwall.com/john/" }
+      ]
+    },
+    {
+      "id": "rsactftool",
+      "name": "RsaCtfTool",
+      "category": "crypto",
+      "difficulty": 3,
+      "tagline": "RSA攻撃の自動化ツール",
+      "when_to_use": "RSAの弱い鍵(小さいe、共通法、Wiener攻撃など)を自動で試して復号したい時。",
+      "use_cases": ["弱いRSA鍵攻撃", "既知攻撃の自動試行", "鍵復元"],
+      "command": "python3 RsaCtfTool.py --publickey key.pub --uncipher cipher.txt",
+      "tags": ["rsa", "attack", "advanced"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/RsaCtfTool/RsaCtfTool" }
+      ]
+    },
+    {
+      "id": "openssl",
+      "name": "OpenSSL",
+      "category": "crypto",
+      "difficulty": 2,
+      "tagline": "暗号処理の標準ツールキット",
+      "when_to_use": "AES/RSAの暗号化・復号、証明書・鍵の確認をコマンドで行いたい時。",
+      "use_cases": ["対称鍵暗号/復号", "証明書解析", "鍵生成"],
+      "command": "openssl enc -d -aes-256-cbc -in cipher.bin -k password",
+      "tags": ["crypto", "toolkit", "tls"],
+      "sources": [
+        { "label": "公式サイト", "url": "https://www.openssl.org" }
+      ]
+    },
+    {
+      "id": "factordb",
+      "name": "FactorDB",
+      "category": "crypto",
+      "difficulty": 1,
+      "tagline": "整数素因数分解データベース",
+      "when_to_use": "RSAのモジュラスNが既に素因数分解されていないか、まず確認したい時。",
+      "use_cases": ["既知素因数の検索", "Nの分解確認", "RSA前調査"],
+      "command": "# http://factordb.com にNを入力、またはAPIで照会",
+      "tags": ["rsa", "factor", "lookup"],
+      "sources": [
+        { "label": "公式サイト", "url": "http://factordb.com" }
+      ]
+    },
+    {
+      "id": "sagemath",
+      "name": "SageMath",
+      "category": "crypto",
+      "difficulty": 3,
+      "tagline": "数学計算環境(暗号向き)",
+      "when_to_use": "楕円曲線・格子・離散対数など、高度な数学を使う暗号問題を解きたい時。",
+      "use_cases": ["楕円曲線計算", "格子攻撃(LLL)", "離散対数"],
+      "command": "sage: factor(143)  # 11 * 13",
+      "tags": ["math", "ecc", "lattice"],
+      "sources": [
+        { "label": "公式サイト", "url": "https://www.sagemath.org" }
+      ]
+    },
+    {
+      "id": "hash-identifier",
+      "name": "hash-identifier",
+      "category": "crypto",
+      "difficulty": 1,
+      "tagline": "ハッシュ種別判定ツール",
+      "when_to_use": "正体不明のハッシュ文字列が何形式(MD5/SHA1等)か当たりを付けたい時。",
+      "use_cases": ["ハッシュ形式判定", "解読前の下調べ"],
+      "command": "hash-identifier  # 対話的にハッシュを入力",
+      "tags": ["hash", "identify"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/blackploit/hash-identifier" }
+      ]
+    },
+    {
+      "id": "xortool",
+      "name": "xortool",
+      "category": "crypto",
+      "difficulty": 2,
+      "tagline": "XOR暗号解析ツール",
+      "when_to_use": "繰り返しキーによるXOR暗号で、キー長とキー自体を推定したい時。",
+      "use_cases": ["XORキー長推定", "キー復元", "頻度分析"],
+      "command": "xortool cipher.bin -c 20",
+      "tags": ["xor", "cipher"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/hellman/xortool" }
+      ]
+    },
+    {
+      "id": "featherduster",
+      "name": "FeatherDuster",
+      "category": "crypto",
+      "difficulty": 3,
+      "tagline": "自動暗号解析ツール",
+      "when_to_use": "暗号文の特徴から、どんな攻撃が刺さりそうか自動で当たりを付けたい時。",
+      "use_cases": ["暗号特徴の自動分析", "攻撃候補の提示"],
+      "command": "python2 featherduster.py cipher.txt",
+      "tags": ["crypto", "analysis", "auto"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/nccgroup/featherduster" }
+      ]
+    },
+
+    {
+      "id": "ghidra",
+      "name": "Ghidra",
+      "category": "pwn",
+      "difficulty": 3,
+      "tagline": "NSA製リバースエンジニアリング統合環境",
+      "when_to_use": "バイナリを逆コンパイルし、C風の擬似コードでロジックを読み解きたい時。無料で高機能。",
+      "use_cases": ["逆コンパイル", "静的解析", "関数フロー解析"],
+      "command": "# GUI。プロジェクトにバイナリを取込み Decompile を開く",
+      "tags": ["disassembler", "decompiler", "static"],
+      "sources": [
+        { "label": "公式サイト", "url": "https://ghidra-sre.org" }
+      ]
+    },
+    {
+      "id": "gdb-pwndbg",
+      "name": "GDB + pwndbg",
+      "category": "pwn",
+      "difficulty": 3,
+      "tagline": "強化版デバッガ",
+      "when_to_use": "実行を止めながらレジスタ・スタック・メモリを観察し、脆弱性を動的解析したい時。",
+      "use_cases": ["動的解析", "スタック観察", "ブレークポイント"],
+      "command": "gdb ./binary  # pwndbg導入でstack/heap表示が強化",
+      "tags": ["debugger", "dynamic", "stack"],
+      "sources": [
+        { "label": "pwndbg GitHub", "url": "https://github.com/pwndbg/pwndbg" }
+      ]
+    },
+    {
+      "id": "pwntools",
+      "name": "pwntools",
+      "category": "pwn",
+      "difficulty": 3,
+      "tagline": "エクスプロイト開発フレームワーク",
+      "when_to_use": "Pythonでソケット通信・ペイロード生成・ROPを組んでエクスプロイトを書きたい時。Pwnの必携。",
+      "use_cases": ["ソケット通信", "ペイロード生成", "ROP構築"],
+      "command": "from pwn import *\np = remote('host', 1337)",
+      "tags": ["exploit", "python", "rop"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/Gallopsled/pwntools" },
+        { "label": "ドキュメント", "url": "https://docs.pwntools.com" }
+      ]
+    },
+    {
+      "id": "ida-free",
+      "name": "IDA Free",
+      "category": "pwn",
+      "difficulty": 3,
+      "tagline": "業界標準ディスアセンブラ",
+      "when_to_use": "高精度なディスアセンブルとグラフ表示で関数の制御フローを追いたい時。",
+      "use_cases": ["ディスアセンブル", "制御フローグラフ", "静的解析"],
+      "command": "# GUI。バイナリを開きグラフビューで解析",
+      "tags": ["disassembler", "static", "graph"],
+      "sources": [
+        { "label": "公式サイト", "url": "https://hex-rays.com/ida-free/" }
+      ]
+    },
+    {
+      "id": "radare2",
+      "name": "radare2",
+      "category": "pwn",
+      "difficulty": 3,
+      "tagline": "CLI型リバースエンジニアリング",
+      "when_to_use": "ターミナルだけで解析・デバッグ・パッチまで完結させたい時。軽量で強力。",
+      "use_cases": ["静的/動的解析", "バイナリパッチ", "関数解析"],
+      "command": "r2 -A ./binary",
+      "tags": ["disassembler", "cli", "patch"],
+      "sources": [
+        { "label": "公式サイト", "url": "https://rada.re/n/" }
+      ]
+    },
+    {
+      "id": "objdump",
+      "name": "objdump",
+      "category": "pwn",
+      "difficulty": 2,
+      "tagline": "手軽なディスアセンブラ",
+      "when_to_use": "重いGUIを使わず、サクッとアセンブリやセクション情報を確認したい時。",
+      "use_cases": ["ディスアセンブル", "セクション確認", "シンボル一覧"],
+      "command": "objdump -d -M intel ./binary",
+      "tags": ["disassembler", "quick", "cli"],
+      "sources": [
+        { "label": "binutils", "url": "https://www.gnu.org/software/binutils/" }
+      ]
+    },
+    {
+      "id": "ropgadget",
+      "name": "ROPgadget",
+      "category": "pwn",
+      "difficulty": 3,
+      "tagline": "ROPガジェット検索",
+      "when_to_use": "ROPチェーンを組むために、バイナリ内の使えるガジェットを列挙したい時。",
+      "use_cases": ["ガジェット検索", "ROPチェーン構築", "アドレス特定"],
+      "command": "ROPgadget --binary ./binary --ropchain",
+      "tags": ["rop", "exploit", "gadget"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/JonathanSalwan/ROPgadget" }
+      ]
+    },
+    {
+      "id": "checksec",
+      "name": "checksec",
+      "category": "pwn",
+      "difficulty": 1,
+      "tagline": "バイナリ保護機構チェック",
+      "when_to_use": "攻略前にNX・Canary・PIE・RELROなどの保護が有効か確認したい時。最初に必ず実行。",
+      "use_cases": ["保護機構確認", "攻略方針決め", "事前調査"],
+      "command": "checksec --file=./binary",
+      "tags": ["protection", "recon", "basic"],
+      "sources": [
+        { "label": "GitHub", "url": "https://github.com/slimm609/checksec.sh" }
+      ]
+    },
+    {
+      "id": "angr",
+      "name": "angr",
+      "category": "pwn",
+      "difficulty": 3,
+      "tagline": "シンボリック実行による解析",
+      "when_to_use": "複雑な条件分岐を持つバイナリで、正解入力をシンボリック実行で自動探索したい時。",
+      "use_cases": ["シンボリック実行", "入力の自動探索", "経路探索"],
+      "command": "import angr\nproj = angr.Project('./binary')",
+      "tags": ["symbolic", "automation", "advanced"],
+      "sources": [
+        { "label": "公式サイト", "url": "https://angr.io" }
+      ]
+    },
+    {
+      "id": "ltrace-strace",
+      "name": "ltrace / strace",
+      "category": "pwn",
+      "difficulty": 2,
+      "tagline": "ライブラリ/システムコールトレーサ",
+      "when_to_use": "プログラムがどんな関数・システムコールを呼ぶか実行時に観察したい時。",
+      "use_cases": ["ライブラリ呼出追跡", "システムコール追跡", "挙動把握"],
+      "command": "ltrace ./binary    # strace ./binary",
+      "tags": ["trace", "dynamic", "syscall"],
+      "sources": [
+        { "label": "strace公式", "url": "https://strace.io" }
+      ]
+    }
+  ]
+}
